@@ -1,0 +1,1070 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tadjoura — Find Your Scent</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="mobile.css">
+<style>
+:root{
+  --bg:#f6f5f2;
+  --text:#111;
+  --gold:#c6a95e;
+  --gold-rich:#D4AF37;
+  --cream:#f5efe6;
+  --gold-strong:rgba(198,169,94,.55);
+  --border:rgba(0,0,0,.08);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+/* Force Cormorant Garamond to use uniform, lining numbers */
+h1, h2, h3, h4, .brand-subtitle, .feature-name, .video-cta-text, .collectors-title, .showcase-title, .prod-name, .bag-total-amount, .scent-title {
+  font-family:'Cormorant Garamond',serif;
+  font-variant-numeric: lining-nums; 
+  font-feature-settings: "lnum";     
+}
+
+a{text-decoration:none;color:inherit}
+.container{width:90%;max-width:1400px;margin:auto}
+
+/* Loading Screen Styles */
+#loading-screen {
+  position: fixed;
+  inset: 0;
+  background: white;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.8s ease, visibility 0.8s;
+}
+#loading-screen.fade-out {
+  opacity: 0;
+  visibility: hidden;
+}
+.loading-logo {
+  width: 150px;
+  animation: logo-spin-stop 3s infinite ease-in-out;
+}
+@keyframes logo-spin-stop {
+  0% { transform: rotate(0deg); }
+  40% { transform: rotate(180deg); }
+  60% { transform: rotate(180deg); }
+  100% { transform: rotate(360deg); }
+}
+
+nav{
+  position:fixed;
+  top:0;left:0;width:100%;
+  padding:20px 0;
+  background:rgba(246,245,242,.9);
+  backdrop-filter:blur(8px);
+  z-index:1000;
+  overflow:visible;
+}
+
+.nav-inner{display:flex;justify-content:space-between;align-items:center}
+
+.logo{
+  font-weight:500;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  font-size:14px;
+  color:white;
+  mix-blend-mode:difference;
+  transition:.3s ease;
+  cursor: pointer;
+}
+.logo:hover{color:var(--gold)}
+
+.nav-links{
+  display:flex;
+  gap:40px;
+  font-size:13px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  align-items: center;
+}
+
+.nav-link.active{color:var(--gold)}
+
+.nav-btn{
+  appearance:none;
+  background:transparent;
+  border:none;
+  font:inherit;
+  color:inherit;
+  padding:0;
+  cursor:pointer;
+  letter-spacing:inherit;
+  text-transform:inherit;
+}
+.nav-btn:focus-visible{
+  outline:2px solid rgba(198,169,94,.55);
+  outline-offset:6px;
+}
+
+.collection-dropdown{
+  position:absolute;
+  left:0;
+  top:100%;
+  width:100%;
+  padding:18px 0 22px;
+  background:rgba(246,245,242,.96);
+  backdrop-filter:blur(10px);
+  border-top:1px solid var(--border);
+  opacity:0;
+  transform:translateY(-8px);
+  pointer-events:none;
+  transition:opacity .45s cubic-bezier(0.2, 0, 0.2, 1), transform .45s cubic-bezier(0.2, 0, 0.2, 1);
+}
+.collection-dropdown.open{
+  opacity:1;
+  transform:translateY(0);
+  pointer-events:auto;
+}
+.collection-list{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  align-items:center;
+  padding:0 20px;
+}
+.collection-bar{
+  width:min(1700px, 92vw);
+  height:76px;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  border:1px solid rgba(0,0,0,0.14);
+}
+.collection-bar-title{
+  position:relative;
+  z-index:2;
+  font-family:'Cormorant Garamond',serif;
+  font-size:22px;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  color:white;
+  text-shadow:0 6px 24px rgba(0,0,0,0.45);
+}
+.collection-bar-video{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  filter:grayscale(20%) contrast(1.05);
+  opacity:0.95;
+}
+.collection-bar-overlay{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(to right, rgba(0,0,0,0.45), rgba(0,0,0,0.2), rgba(0,0,0,0.45));
+  z-index:1;
+}
+.collection-bar.locked{
+  background:#1f1f1f;
+  border-color:rgba(255,255,255,0.08);
+}
+.collection-bar.locked .collection-bar-title{display:none}
+.lock-icon{width:22px;height:22px;fill:rgba(255,255,255,0.7)}
+.collection-bar.locked .lock-icon{position:relative;z-index:2}
+.collection-bar.locked::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(to right, rgba(0,0,0,0.45), rgba(0,0,0,0.15), rgba(0,0,0,0.45));
+}
+.collection-bar-link{
+  cursor:pointer;
+  transition:transform .35s cubic-bezier(0.2, 0, 0.2, 1);
+}
+.collection-bar-link:hover{transform:translateY(-1px)}
+
+.nav-bag{display:flex;align-items:center;gap:8px;cursor:pointer}
+.nav-bag-icon{width:20px;height:20px;fill:currentColor;transition:color .3s}
+.nav-bag.has-items .nav-bag-icon{color:var(--gold)}
+.nav-bag-count{font-size:11px;font-weight:600;letter-spacing:.02em}
+
+.bag-drawer{
+  position:fixed;
+  top:0;
+  right:-450px;
+  width:450px;
+  height:100vh;
+  background:white;
+  z-index:2000;
+  box-shadow:-10px 0 30px rgba(0,0,0,0.1);
+  transition:0.5s cubic-bezier(0.2, 0, 0.2, 1);
+  display:flex;
+  flex-direction:column;
+  padding:40px;
+}
+.bag-drawer.open{right:0}
+.bag-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:30px;
+  border-bottom:1px solid var(--border);
+  padding-bottom:20px;
+}
+.bag-title{font-size:18px;text-transform:uppercase;letter-spacing:0.1em}
+.bag-close{cursor:pointer;font-size:24px}
+.bag-items{flex-grow:1;overflow-y:auto;margin-bottom:20px}
+.bag-item{
+  display:grid;
+  grid-template-columns:80px 1fr auto;
+  gap:20px;
+  align-items:center;
+  margin-bottom:20px;
+  padding-bottom:20px;
+  border-bottom:1px solid rgba(0,0,0,0.03);
+}
+.bag-item img{width:100%;height:80px;object-fit:contain;background:var(--bg)}
+.bag-item-info h4{font-size:14px;text-transform:uppercase;margin-bottom:4px}
+.bag-item-info p{font-size:12px;color:rgba(0,0,0,0.5)}
+.bag-item-remove{cursor:pointer;font-size:10px;text-transform:uppercase;color:var(--gold)}
+.bag-footer{border-top:1px solid var(--border);padding-top:30px}
+.bag-total{display:flex;justify-content:space-between;margin-bottom:20px}
+.bag-total-label{text-transform:uppercase;font-size:14px;letter-spacing:0.1em}
+.bag-total-amount{font-size:24px;font-weight:600;font-family:'Cormorant Garamond',serif}
+.btn-checkout{width:100%;padding:18px;background:black;color:white;text-transform:uppercase;font-size:12px;letter-spacing:0.1em;cursor:pointer;transition:0.3s;border:none}
+.btn-checkout:hover{background:var(--gold)}
+
+/* Showcase Banner */
+.scent-hero{
+  height:60vh;
+  position:relative;
+  background: black;
+  overflow:hidden;
+  margin-top:0;
+}
+.scent-bg{
+  width:100%;
+  height:100%;
+  object-fit:cover; /* This will handle the aspect ratio transition from vertical to horizontal banner */
+  opacity:0.8;
+  /* Simulation of AI extension: we use a centered cover that crops top/bottom of the vertical image */
+  object-position: center;
+}
+.scent-content{
+  position:absolute;
+  bottom:60px;
+  left:60px;
+  color:white;
+}
+.scent-title{
+  font-size:42px;
+  text-transform:uppercase;
+  letter-spacing:0.05em;
+  line-height:1;
+}
+
+/* Quiz Popup Overlay */
+#quiz-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(15px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 1s ease, visibility 1s;
+}
+#quiz-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+.quiz-box {
+  width: 90%;
+  max-width: 600px;
+  background: white;
+  padding: 60px;
+  position: relative;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.05);
+  overflow: hidden;
+}
+.quiz-box::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url('images/texture4.png');
+  background-size: cover;
+  opacity: 0.15;
+  pointer-events: none;
+}
+.quiz-step {
+  display: none;
+  animation: fade-in-up 0.8s ease forwards;
+}
+.quiz-step.active { display: block; }
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.quiz-question {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  margin-bottom: 40px;
+  line-height: 1.3;
+}
+.quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.quiz-btn {
+  padding: 16px;
+  border: 1px solid var(--border);
+  background: transparent;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: 0.4s ease;
+}
+.quiz-btn:hover {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: white;
+}
+
+/* Scent Directory */
+.directory-section {
+  padding: 120px 0;
+}
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 42px;
+  text-align: center;
+  margin-bottom: 80px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.scent-category {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr; /* Shifted more weight to the left for text */
+  gap: 60px; /* Reduced gap to bring everything closer horizontally */
+  margin-bottom: 120px;
+  align-items: center;
+  transition: opacity 0.8s ease;
+}
+.scent-category:nth-child(even) {
+  direction: rtl;
+}
+.scent-category:nth-child(even) .cat-content {
+  direction: ltr;
+  text-align: left;
+}
+.cat-content h3 {
+  font-size: 36px;
+  margin-bottom: 15px; /* Tightened title spacing */
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+.cat-smells-like {
+  display: block; /* Removed flex to kill the horizontal alignment forcing height */
+  margin-bottom: 20px; /* Tight 1-line break space */
+}
+.cat-smells-like p {
+  font-size: 15px;
+  line-height: 1.5;
+  color: rgba(0,0,0,0.7);
+  margin-bottom: 0;
+}
+.cat-image {
+  width: 320px; /* Slightly larger image */
+  height: 320px;
+  object-fit: cover;
+  transition: transform 1.2s cubic-bezier(0.2, 0, 0.2, 1), opacity 1.2s ease;
+  transform: scale(0.85);
+  opacity: 0.5;
+  display: block;
+  margin: 0 auto;
+}
+.cat-image.grow {
+  transform: scale(1.1);
+  opacity: 1;
+}
+.cat-details {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Clean 1-line break spacing */
+}
+.cat-label {
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+  margin-bottom: 2px;
+  display: block;
+}
+.cat-best-for, .cat-notes {
+  font-size: 14px;
+  color: rgba(0,0,0,0.8);
+  line-height: 1.6;
+}
+
+/* Intensity Button & Scale */
+#intensity-trigger {
+  position: fixed;
+  right: -50px;
+  top: 50%;
+  transform: translateY(-50%) rotate(-90deg);
+  background: black;
+  color: white;
+  padding: 15px 30px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  cursor: pointer;
+  z-index: 1500;
+  transition: 0.4s cubic-bezier(0.2, 0, 0.2, 1);
+}
+#intensity-trigger:hover {
+  right: -40px;
+  background: var(--gold);
+}
+
+#intensity-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.9);
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.6s ease;
+}
+#intensity-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+.intensity-box {
+  width: 90%;
+  max-width: 800px;
+  color: white;
+  padding: 60px;
+}
+.intensity-header {
+  margin-bottom: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.intensity-title { font-size: 24px; text-transform: uppercase; letter-spacing: 0.1em; }
+.close-intensity { cursor: pointer; font-size: 30px; }
+
+.intensity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+.intensity-item {
+  display: grid;
+  grid-template-columns: 200px 1fr 100px;
+  align-items: center;
+  gap: 30px;
+}
+.item-info h4 { font-size: 16px; text-transform: uppercase; margin-bottom: 4px; }
+.item-info p { font-size: 12px; color: rgba(255,255,255,0.5); }
+.intensity-bar-bg {
+  height: 4px;
+  background: rgba(255,255,255,0.1);
+  position: relative;
+}
+.intensity-bar {
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.item-label { font-size: 12px; text-align: right; text-transform: uppercase; color: rgba(255,255,255,0.6); }
+
+/* Recommendation Section */
+#recommendation-section {
+  padding: 100px 0;
+  background: var(--cream);
+  text-align: center;
+  display: none;
+}
+.rec-prompt h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px;
+  margin-bottom: 40px;
+}
+.rec-btns {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 20px;
+}
+.btn-choice {
+  padding: 15px 40px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  border: 1px solid var(--gold);
+  background: var(--gold);
+  color: white;
+  cursor: pointer;
+  transition: 0.4s;
+}
+.btn-choice:hover {
+  background: black;
+  border-color: black;
+}
+.btn-retake {
+  background: transparent;
+  color: black;
+  border: none;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  opacity: 0.6;
+}
+.btn-retake:hover { opacity: 1; }
+
+.rec-results {
+  display: none;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  margin-top: 60px;
+  animation: fade-in 1s ease;
+}
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+/* Responsive */
+@media (max-width: 900px){
+  .scent-category { grid-template-columns: 1fr; gap: 40px; text-align: center; }
+  .cat-smells-like { flex-direction: column; text-align: center; }
+  .scent-category:nth-child(even) { direction: ltr; }
+  .intensity-item { grid-template-columns: 1fr; gap: 10px; text-align: center; }
+  .intensity-list { gap: 40px; }
+  .item-label { text-align: center; }
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="loading-screen">
+  <img src="assets/images/TADJOURA FAVICON.png" class="loading-logo" alt="Loading...">
+</div>
+
+<div class="bag-drawer" id="bagDrawer">
+  <div class="bag-header">
+    <h2 class="bag-title">Shopping Bag</h2>
+    <span class="bag-close" onclick="toggleBag()">×</span>
+  </div>
+  <div class="bag-items" id="bagItems"></div>
+  <div class="bag-footer">
+    <div class="bag-total">
+      <span class="bag-total-label">Total</span>
+      <span class="bag-total-amount" id="bagTotal">£0.00</span>
+    </div>
+    <button class="btn-checkout">Proceed to Checkout</button>
+  </div>
+</div>
+
+<nav>
+  <div class="container nav-inner">
+    <a href="tadjoura-index.html" class="logo nav-link">Tadjoura</a>
+    <div class="nav-links">
+      <a href="tadjoura-index.html" class="nav-link">Home</a>
+      <button class="nav-btn" type="button" id="collectionToggle" aria-expanded="false">Collection</button>
+      <a href="findyourscent.html" class="nav-link active">Find Your Scent</a>
+      <a href="#" class="nav-link">Gallery</a>
+      <a href="shippingreturns.html" class="nav-link">Shipping &amp; Returns</a>
+      <a href="tadjoura-about.html" class="nav-link">About</a>
+      <a href="tadjoura-contact.html" class="nav-link">Contact</a>
+      <div class="nav-bag" id="navBag" onclick="toggleBag()">
+        <svg class="nav-bag-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 7h-3c0-2.21-1.79-4-4-4S8 4.79 8 7H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-7-2c1.1 0 2 .9 2 2H10c0-1.1.9-2 2-2zm7 14H5V9h3v2c0 .55.45 1 1 1s1-.45 1-1V9h4v2c0 .55.45 1 1 1s1-.45 1-1V9h3v10z"/>
+        </svg>
+        <span class="nav-bag-count" id="navBagCount">(0)</span>
+      </div>
+    </div>
+  </div>
+  <div class="collection-dropdown" id="collectionDropdown" aria-hidden="true">
+    <div class="collection-list">
+      <a class="collection-bar collection-bar-link nav-link" href="springcollection.html" aria-label="Spring Collection 25/26">
+        <video class="collection-bar-video" autoplay muted loop playsinline>
+          <source src="assets/images/waterwet.mp4" type="video/mp4">
+        </video>
+        <div class="collection-bar-overlay"></div>
+        <div class="collection-bar-title">Spring Collection 25/26</div>
+      </a>
+      <div class="collection-bar locked" aria-hidden="true">
+        <svg class="lock-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 1a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-1V6a5 5 0 0 0-5-5Zm-3 8V6a3 3 0 1 1 6 0v3H9Zm3 4a2 2 0 0 1 1 3.732V18a1 1 0 0 1-2 0v-1.268A2 2 0 0 1 12 13Z"/>
+        </svg>
+      </div>
+      <div class="collection-bar locked" aria-hidden="true">
+        <svg class="lock-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 1a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-1V6a5 5 0 0 0-5-5Zm-3 8V6a3 3 0 1 1 6 0v3H9Zm3 4a2 2 0 0 1 1 3.732V18a1 1 0 0 1-2 0v-1.268A2 2 0 0 1 12 13Z"/>
+        </svg>
+      </div>
+      <div class="collection-bar locked" aria-hidden="true">
+        <svg class="lock-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 1a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-1V6a5 5 0 0 0-5-5Zm-3 8V6a3 3 0 1 1 6 0v3H9Zm3 4a2 2 0 0 1 1 3.732V18a1 1 0 0 1-2 0v-1.268A2 2 0 0 1 12 13Z"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<section class="scent-hero">
+  <img src="assets/images/scentbanner2.png" alt="Find Your Scent" class="scent-bg">
+  <div class="scent-content">
+    <h1 class="scent-title">Find Your Scent</h1>
+  </div>
+</section>
+
+<!-- Quiz Overlay -->
+<div id="quiz-overlay">
+  <div class="quiz-box">
+    <!-- Step 1 -->
+    <div class="quiz-step active" id="step-1">
+      <h2 class="quiz-question">Do you prefer something that feels warm & cosy, or fresh & airy?</h2>
+      <div class="quiz-options">
+        <button class="quiz-btn" onclick="nextStep(2, 'Warm')">Warm & Cosy</button>
+        <button class="quiz-btn" onclick="nextStep(2, 'Fresh')">Fresh & Airy</button>
+      </div>
+    </div>
+    <!-- Step 2 -->
+    <div class="quiz-step" id="step-2">
+      <h2 class="quiz-question">Do you want people to notice it from across the room, or is it something personal?</h2>
+      <div class="quiz-options">
+        <button class="quiz-btn" onclick="nextStep(3, 'Strong')">Across the Room</button>
+        <button class="quiz-btn" onclick="nextStep(3, 'Subtle')">Something Personal</button>
+      </div>
+    </div>
+    <!-- Step 3 -->
+    <div class="quiz-step" id="step-3">
+      <h2 class="quiz-question">Is this for daytime, evening, or both?</h2>
+      <div class="quiz-options">
+        <button class="quiz-btn" onclick="finishQuiz('Day')">Daytime</button>
+        <button class="quiz-btn" onclick="finishQuiz('Evening')">Evening</button>
+        <button class="quiz-btn" onclick="finishQuiz('Both')">Both</button>
+      </div>
+    </div>
+    <!-- Result -->
+    <div class="quiz-step" id="step-result">
+      <h2 class="quiz-question">We think there's something you'll like, maybe a discount too... Keep scrolling for a surprise.</h2>
+      <button class="quiz-btn" onclick="closeQuiz()">Explore Recommendations</button>
+    </div>
+  </div>
+</div>
+
+<section class="container directory-section">
+  <h2 class="section-title">Scent Directory</h2>
+
+  <!-- Smoky & Dark -->
+  <div class="scent-category">
+    <div class="cat-content">
+      <h3>'Smoky & Dark'</h3>
+      <div class="cat-smells-like">
+        <p><span class="cat-label">Smells like:</span> A wood fire dying down, a leather jacket left near incense, or the inside of an old wooden chest.</p>
+      </div>
+      <div class="cat-details">
+        <div class="cat-best-for">
+          <span class="cat-label">Best for:</span> Evening wear, autumn/winter, those who want presence in a room.
+        </div>
+        <div class="cat-notes">
+          <span class="cat-label">Notes in this family:</span> Smoky, Leather-Forward, Tarry, and Black Oud.
+        </div>
+      </div>
+    </div>
+    <img src="assets/images/woodyscent.png" class="cat-image" alt="Smoky & Dark">
+  </div>
+
+  <!-- Woody & Earthy -->
+  <div class="scent-category">
+    <div class="cat-content">
+      <h3>'Woody & Earthy'</h3>
+      <div class="cat-smells-like">
+        <p><span class="cat-label">Smells like:</span> Fresh-cut timber, damp soil after rain, the inside of a cedar wardrobe, or a forest floor.</p>
+      </div>
+      <div class="cat-details">
+        <div class="cat-best-for">
+          <span class="cat-label">Best for:</span> Everyday wear, unisex appeal, those new to oud.
+        </div>
+        <div class="cat-notes">
+          <span class="cat-label">Notes in this family:</span> Raw, Khmer, Hindi, and Cedarwood Oud.
+        </div>
+      </div>
+    </div>
+    <img src="assets/images/earthyscent.png" class="cat-image" alt="Woody & Earthy">
+  </div>
+
+  <!-- Sweet & Resinous -->
+  <div class="scent-category">
+    <div class="cat-content">
+      <h3>'Sweet & Resinous'</h3>
+      <div class="cat-smells-like">
+        <p><span class="cat-label">Smells like:</span> Warm honey, dried fruit, amber, or vanilla. Feels almost edible and rich, without being too sugary.</p>
+      </div>
+      <div class="cat-details">
+        <div class="cat-best-for">
+          <span class="cat-label">Best for:</span> Cold evenings, Casual events, gifting to someone new to oud.
+        </div>
+        <div class="cat-notes">
+          <span class="cat-label">Notes in this family:</span> Musk blends, Amber, Vanilla, and Malay/Borneo Oud.
+        </div>
+      </div>
+    </div>
+    <img src="assets/images/sweetscent.jpg" class="cat-image" alt="Sweet & Resinous">
+  </div>
+
+  <!-- Floral & Soft -->
+  <div class="scent-category">
+    <div class="cat-content">
+      <h3>'Floral & Soft'</h3>
+      <div class="cat-smells-like">
+        <p><span class="cat-label">Smells like:</span> Rose petals warmed by the sun, a bouquet sitting in a warm room, but with a rich, woody base.</p>
+      </div>
+      <div class="cat-details">
+        <div class="cat-best-for">
+          <span class="cat-label">Best for:</span> Daytime, office wear, those transitioning from mainstream Western perfumes.
+        </div>
+        <div class="cat-notes">
+          <span class="cat-label">Notes in this family:</span> Persian-Style blends, Rose, Jasmine, Lily of the Valley, and Tuberose Ouds.
+        </div>
+      </div>
+    </div>
+    <img src="assets/images/floralscent.png" class="cat-image" alt="Floral & Soft">
+  </div>
+
+  <!-- Clean & Musky -->
+  <div class="scent-category">
+    <div class="cat-content">
+      <h3>'Clean & Musky'</h3>
+      <div class="cat-smells-like">
+        <p><span class="cat-label">Smells like:</span> Warm skin, fresh linen, imagine catching a faint trace of someone that just stepped out a steam room. Subtle and intimate.</p>
+      </div>
+      <div class="cat-details">
+        <div class="cat-best-for">
+          <span class="cat-label">Best for:</span> Office, everyday wear, minimalists.
+        </div>
+        <div class="cat-notes">
+          <span class="cat-label">Notes in this family:</span> Sandalwood, Citrus, Frankincense, and White Oud.
+        </div>
+      </div>
+    </div>
+    <img src="assets/images/linenscent.png" class="cat-image" alt="Clean & Musky">
+  </div>
+
+  <!-- Spicy & Warm -->
+  <div class="scent-category">
+    <div class="cat-content">
+      <h3>'Spicy & Warm'</h3>
+      <div class="cat-smells-like">
+        <p><span class="cat-label">Smells like:</span> Cardamom, Saffron, or Black Pepper layered over a rich wood base. Like spiced tea sitting on a carved wooden table.</p>
+      </div>
+      <div class="cat-details">
+        <div class="cat-best-for">
+          <span class="cat-label">Best for:</span> Evening, autumn/winter, confident wearers who want complexity.
+        </div>
+        <div class="cat-notes">
+          <span class="cat-label">Notes in this family:</span> Tobacco, Cardamom, Nutmeg, Saffron, Cinnamon Oud.
+        </div>
+      </div>
+    </div>
+    <img src="assets/images/spicyscent.png" class="cat-image" alt="Spicy & Warm">
+  </div>
+</section>
+
+<!-- Intensity Floating Button -->
+<div id="intensity-trigger" onclick="toggleIntensity()">Compare Intensity</div>
+
+<!-- Intensity Overlay -->
+<div id="intensity-overlay">
+  <div class="intensity-box">
+    <div class="intensity-header">
+      <h2 class="intensity-title">Intensity Scale</h2>
+      <span class="close-intensity" onclick="toggleIntensity()">×</span>
+    </div>
+    <div class="intensity-list">
+      <div class="intensity-item">
+        <div class="item-info"><h4>Clean & Musky</h4><p>Skin-close, intimate</p></div>
+        <div class="intensity-bar-bg"><div class="intensity-bar" style="width: 20%; background: #c6a95e;"></div></div>
+        <div class="item-label">Very Subtle</div>
+      </div>
+      <div class="intensity-item">
+        <div class="item-info"><h4>Fresh & Airy</h4><p>Light woody trail</p></div>
+        <div class="intensity-bar-bg"><div class="intensity-bar" style="width: 40%; background: #d4af37;"></div></div>
+        <div class="item-label">Gentle</div>
+      </div>
+      <div class="intensity-item">
+        <div class="item-info"><h4>Floral & Soft</h4><p>Rose-warmed wood</p></div>
+        <div class="intensity-bar-bg"><div class="intensity-bar" style="width: 50%; background: #b8860b;"></div></div>
+        <div class="item-label">Light</div>
+      </div>
+      <div class="intensity-item">
+        <div class="item-info"><h4>Sweet & Resinous</h4><p>Warm, enveloping</p></div>
+        <div class="intensity-bar-bg"><div class="intensity-bar" style="width: 65%; background: #8b4513;"></div></div>
+        <div class="item-label">Moderate</div>
+      </div>
+      <div class="intensity-item">
+        <div class="item-info"><h4>Woody & Earthy</h4><p>Grounded, natural</p></div>
+        <div class="intensity-bar-bg"><div class="intensity-bar" style="width: 75%; background: #a0522d;"></div></div>
+        <div class="item-label">Medium</div>
+      </div>
+      <div class="intensity-item">
+        <div class="item-info"><h4>Spicy & Warm</h4><p>Bold, complex</p></div>
+        <div class="intensity-bar-bg"><div class="intensity-bar" style="width: 85%; background: #800000;"></div></div>
+        <div class="item-label">Strong</div>
+      </div>
+      <div class="intensity-item">
+        <div class="item-info"><h4>Smoky & Dark</h4><p>Room-filling presence</p></div>
+        <div class="intensity-bar-bg"><div class="intensity-bar" style="width: 100%; background: #4b0000;"></div></div>
+        <div class="item-label">Intense</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section id="recommendation-section">
+  <div class="container">
+    <div class="rec-prompt" id="rec-prompt">
+      <h2>We gathered your preferences from the quiz you filled in.. Want to see our recommendations?</h2>
+      <div class="rec-btns">
+        <button class="btn-choice" onclick="showRecs()">Yes</button>
+        <button class="btn-choice" onclick="hideRecPrompt()">No</button>
+      </div>
+      <button class="btn-retake" onclick="resetQuiz()">Retake the Quiz?</button>
+    </div>
+
+    <div class="rec-results" id="rec-results">
+      <!-- Simulated product recommendations based on quiz -->
+      <div class="rec-card" style="text-align: center;">
+        <img src="assets/images/oudbottle3.png" style="width: 100%; height: 300px; object-fit: contain;" alt="Golden Euphrates">
+        <h3 style="margin-top: 20px; font-family: 'Cormorant Garamond', serif;">Golden Euphrates</h3>
+        <p style="font-size: 12px; margin-bottom: 20px;">Perfectly matches your preference for Warm & Evening scents.</p>
+        <a href="springcollection.html" class="btn-choice">Shop Now</a>
+      </div>
+      <div class="rec-card" style="text-align: center;">
+        <img src="assets/images/oudbottle4.png" style="width: 100%; height: 300px; object-fit: contain;" alt="Apollonia Musk">
+        <h3 style="margin-top: 20px; font-family: 'Cormorant Garamond', serif;">Apollonia Musk</h3>
+        <p style="font-size: 12px; margin-bottom: 20px;">A subtle choice for those who want a personal trail.</p>
+        <a href="springcollection.html" class="btn-choice">Shop Now</a>
+      </div>
+      <div class="rec-card" style="text-align: center;">
+        <img src="assets/images/oudbottle2.png" style="width: 100%; height: 300px; object-fit: contain;" alt="Lemnos Oud">
+        <h3 style="margin-top: 20px; font-family: 'Cormorant Garamond', serif;">Lemnos Oud</h3>
+        <p style="font-size: 12px; margin-bottom: 20px;">Strong and complex, just as you requested.</p>
+        <a href="springcollection.html" class="btn-choice">Shop Now</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Loading Screen
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('loading-screen').classList.add('fade-out');
+    }, 2000);
+  });
+
+  // Page Transitions
+  document.querySelectorAll('.nav-link, .collection-bar-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+      const href = link.getAttribute('href');
+      if (href && href !== '#' && !href.startsWith('http')) {
+        e.preventDefault();
+        const loader = document.getElementById('loading-screen');
+        loader.classList.remove('fade-out');
+        setTimeout(() => {
+          window.location.href = href;
+        }, 1500);
+      }
+    });
+  });
+
+  (function initCollectionDropdown(){
+    const toggle = document.getElementById('collectionToggle');
+    const dropdown = document.getElementById('collectionDropdown');
+    if (!toggle || !dropdown) return;
+
+    const setOpen = (open) => {
+      dropdown.classList.toggle('open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      dropdown.setAttribute('aria-hidden', String(!open));
+    };
+
+    toggle.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setOpen(!dropdown.classList.contains('open'));
+    });
+
+    dropdown.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+
+    document.addEventListener('click', () => {
+      setOpen(false);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') setOpen(false);
+    });
+  })();
+
+  const bag = [];
+  function toggleBag() {
+    document.getElementById('bagDrawer').classList.toggle('open');
+  }
+
+  function updateBagUI() {
+    const items = document.getElementById('bagItems');
+    const totalEl = document.getElementById('bagTotal');
+    const countEl = document.getElementById('navBagCount');
+    const bagEl = document.getElementById('navBag');
+
+    let total = 0;
+    let count = 0;
+    items.innerHTML = '';
+
+    bag.forEach((item, idx) => {
+      const itemTotal = item.price * item.qty;
+      total += itemTotal;
+      count += item.qty;
+      items.insertAdjacentHTML('beforeend', `
+        <div class="bag-item">
+          <img src="${item.img}" alt="${item.name}">
+          <div class="bag-item-info">
+            <h4>${item.name}</h4>
+            <p>${item.size} × ${item.qty} — £${itemTotal.toFixed(2)}</p>
+            <span class="bag-item-remove" data-remove="${idx}">Remove</span>
+          </div>
+          <div>£${itemTotal.toFixed(2)}</div>
+        </div>
+      `);
+    });
+
+    totalEl.textContent = `£${total.toFixed(2)}`;
+    countEl.textContent = `(${count})`;
+    if (count > 0) bagEl.classList.add('has-items'); else bagEl.classList.remove('has-items');
+
+    items.querySelectorAll('[data-remove]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const i = parseInt(btn.getAttribute('data-remove'), 10);
+        bag.splice(i, 1);
+        updateBagUI();
+      });
+    });
+  }
+
+  updateBagUI();
+
+  // Quiz Logic
+  let quizTriggered = false;
+  window.addEventListener('scroll', () => {
+    if (!quizTriggered && window.scrollY > 400) {
+      quizTriggered = true;
+      setTimeout(() => {
+        document.getElementById('quiz-overlay').classList.add('active');
+      }, 500);
+    }
+  });
+
+  function nextStep(step, val) {
+    document.querySelectorAll('.quiz-step').forEach(s => s.classList.remove('active'));
+    document.getElementById('step-' + step).classList.add('active');
+  }
+
+  function finishQuiz(val) {
+    document.querySelectorAll('.quiz-step').forEach(s => s.classList.remove('active'));
+    document.getElementById('step-result').classList.add('active');
+  }
+
+  function closeQuiz() {
+    document.getElementById('quiz-overlay').classList.remove('active');
+    document.getElementById('recommendation-section').style.display = 'block';
+    // Smooth scroll to directory
+    window.scrollTo({ top: window.scrollY + 500, behavior: 'smooth' });
+  }
+
+  function resetQuiz() {
+    quizTriggered = false;
+    document.getElementById('recommendation-section').style.display = 'none';
+    document.querySelectorAll('.quiz-step').forEach(s => s.classList.remove('active'));
+    document.getElementById('step-1').classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Intensity Logic
+  function toggleIntensity() {
+    document.getElementById('intensity-overlay').classList.toggle('active');
+  }
+
+  // Recommendation Interaction
+  function showRecs() {
+    document.getElementById('rec-prompt').style.display = 'none';
+    document.getElementById('rec-results').style.display = 'grid';
+  }
+
+  function hideRecPrompt() {
+    document.getElementById('recommendation-section').style.display = 'none';
+  }
+
+  // Scent Family Image Scroll Animation
+  const observerOptions = {
+    root: null,
+    threshold: 0.5 // Trigger when 50% of the category is in view
+  };
+
+  const scrollObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const img = entry.target.querySelector('.cat-image');
+      if (img) {
+        if (entry.isIntersecting) {
+          img.classList.add('grow');
+        } else {
+          img.classList.remove('grow');
+        }
+      }
+    });
+  }, observerOptions);
+
+  document.querySelectorAll('.scent-category').forEach(cat => {
+    scrollObserver.observe(cat);
+  });
+</script>
+
+
+<script src="mobile.js"></script>
+</body>
+</html>
+
+

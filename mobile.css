@@ -1,0 +1,179 @@
+﻿.nav-burger{display:none}
+.mobile-menu{display:none}
+
+@media (max-width: 700px){
+  html, body{overflow-x:hidden}
+
+  .container{width:92% !important}
+
+  #cookie-popup{
+    left:16px !important;
+    right:16px !important;
+    bottom:16px !important;
+    padding:16px 16px !important;
+    gap:12px !important;
+    flex-direction:column !important;
+    align-items:flex-start !important;
+  }
+  #cookie-popup .cookie-text{max-width:none !important}
+
+  .bag-drawer{
+    width:100vw !important;
+    max-width:420px !important;
+    padding:24px 18px !important;
+    right:0 !important;
+    transform:translateX(110%) !important;
+  }
+  .bag-drawer.open{transform:translateX(0) !important}
+
+  nav{padding:16px 0 !important}
+  .nav-links{display:none !important}
+
+  .nav-burger{
+    display:flex !important;
+    align-items:center;
+    justify-content:center;
+    width:44px;
+    height:44px;
+    border:1px solid rgba(0,0,0,0.12);
+    border-radius:14px;
+    background:rgba(255,255,255,0.55);
+    cursor:pointer;
+  }
+  .nav-burger svg{width:18px;height:18px;fill:rgba(0,0,0,0.85)}
+
+  .mobile-menu{
+    display:flex;
+    position:fixed;
+    inset:0;
+    background:rgba(246,245,242,0.98);
+    backdrop-filter:blur(12px);
+    z-index:1800;
+    transform:translateY(-100%);
+    transition:transform .5s cubic-bezier(0.2, 0, 0.2, 1);
+    flex-direction:column;
+  }
+  body.mobile-menu-open .mobile-menu{transform:translateY(0)}
+  body.mobile-menu-open{overflow:hidden}
+
+  .mobile-menu-top{
+    padding:18px 0;
+    border-bottom:1px solid rgba(0,0,0,0.06);
+  }
+  .mobile-menu-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+  }
+  .mobile-close{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:44px;
+    height:44px;
+    border:1px solid rgba(0,0,0,0.12);
+    border-radius:14px;
+    background:rgba(255,255,255,0.55);
+    cursor:pointer;
+    font-size:18px;
+    line-height:1;
+    color:rgba(0,0,0,0.85);
+  }
+  .mobile-menu-body{
+    padding:18px 0 24px;
+    overflow:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  .mobile-links{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    padding:0 0 18px;
+  }
+  .mobile-links a{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:16px 18px;
+    border:1px solid rgba(0,0,0,0.10);
+    border-radius:18px;
+    background:rgba(255,255,255,0.55);
+    font-size:12px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+  }
+
+  .mobile-collection{
+    padding-top:10px;
+    border-top:1px solid rgba(0,0,0,0.06);
+  }
+  .mobile-collection-btn{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:16px 18px;
+    border:1px solid rgba(0,0,0,0.10);
+    border-radius:18px;
+    background:rgba(255,255,255,0.55);
+    font-size:12px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    cursor:pointer;
+  }
+  .mobile-collection-panel{
+    display:none;
+    padding:14px 0 0;
+  }
+  .mobile-collection.open .mobile-collection-panel{display:block}
+
+  .mobile-collection .collection-list{gap:10px !important}
+  .mobile-collection .collection-bar{
+    width:100% !important;
+    height:64px !important;
+    border-radius:16px !important;
+    overflow:hidden;
+  }
+  .mobile-collection .collection-bar-title{font-size:18px !important}
+
+  .collection-dropdown{display:none !important}
+
+  .featured-tiles{flex-direction:column !important;height:auto !important}
+  .feature-tile{height:56vh !important}
+  .feature-content{left:20px !important;right:20px !important;bottom:22px !important}
+  .feature-name{font-size:32px !important}
+
+  .faves{padding:64px 0 !important}
+  .faves-grid{
+    display:flex !important;
+    gap:16px !important;
+    overflow-x:auto !important;
+    scroll-snap-type:x mandatory !important;
+    padding:0 4px 10px !important;
+    -webkit-overflow-scrolling:touch;
+  }
+  .fave-card{
+    min-width:86vw !important;
+    scroll-snap-align:start !important;
+  }
+
+  .collectors-section{padding:86px 0 !important}
+  .collectors-grid{grid-template-columns:1fr !important;gap:28px !important}
+  .collectors-title{font-size:26px !important}
+
+  .brand{padding:86px 0 !important}
+  .brand-grid{grid-template-columns:1fr !important;gap:28px !important}
+  .brand-title{font-size:34px !important}
+
+  .video-cta-section{height:64vh !important}
+  .video-cta-text{font-size:30px !important}
+
+  .product-main{grid-template-columns:1fr !important}
+  .product-gallery{position:relative !important;top:auto !important}
+  .gallery-thumbs{flex-direction:row !important;overflow-x:auto !important}
+
+  .product-grid{grid-template-columns:1fr !important}
+  .sidebar{position:relative !important;top:auto !important}
+}

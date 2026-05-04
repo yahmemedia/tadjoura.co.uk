@@ -1,0 +1,261 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Success — Tadjoura</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+  
+<link rel="stylesheet" href="mobile.css">
+<style>
+    :root{
+      --gold:#c6a95e;
+      --gold-rich:#D4AF37;
+      --ink:#0b0b0b;
+      --paper:#f6f5f2;
+      --line:rgba(0,0,0,0.12);
+    }
+
+    html,body{height:100%;}
+    body{
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--ink);
+      background:var(--paper);
+    }
+
+    a{color:inherit;text-decoration:none}
+
+    .container{max-width:1100px;margin:0 auto;padding:0 22px}
+
+    #loading-screen{
+      position:fixed;inset:0;background:var(--paper);
+      display:flex;align-items:center;justify-content:center;z-index:9999;
+      transition:opacity .5s ease, visibility .5s ease;
+    }
+    #loading-screen.fade-out{opacity:0;visibility:hidden}
+    .loading-logo{width:92px;height:92px;opacity:.9}
+
+    nav{
+      position:sticky;top:0;z-index:50;
+      background:rgba(246,245,242,0.92);
+      backdrop-filter:blur(14px);
+      border-bottom:1px solid rgba(0,0,0,0.06);
+    }
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:18px 0}
+    .logo{
+      font-family:"Cormorant Garamond", serif;
+      font-size:20px;letter-spacing:.08em;text-transform:uppercase;
+    }
+    .nav-links{display:flex;align-items:center;gap:22px}
+    .nav-links a, .nav-links button{
+      font-family:Inter, sans-serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+      background:none;border:none;padding:0;margin:0;cursor:pointer;color:rgba(0,0,0,0.82);
+      transition:color .25s ease;
+    }
+    .nav-links a:hover, .nav-links button:hover{color:var(--gold)}
+    .nav-links a.active{color:var(--gold)}
+
+    .nav-bag{
+      display:flex;align-items:center;gap:8px;cursor:pointer;color:rgba(0,0,0,0.85);
+      transition:color .25s ease;
+    }
+    .nav-bag.has-items{color:var(--gold)}
+    .nav-bag-icon{width:18px;height:18px;fill:currentColor}
+    .nav-bag-count{font-size:11px;letter-spacing:.08em;opacity:.9}
+
+    .hero{
+      padding:70px 0 34px;
+      border-bottom:1px solid rgba(0,0,0,0.06);
+    }
+    .hero-inner{display:grid;grid-template-columns:1.2fr .8fr;gap:34px;align-items:center}
+    .kicker{
+      font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:rgba(0,0,0,0.72);
+      margin:0 0 10px;
+    }
+    .title{
+      font-family:"Cormorant Garamond", serif;
+      font-size:54px;line-height:1.02;letter-spacing:.01em;margin:0 0 14px;
+    }
+    .subtitle{max-width:60ch;margin:0 0 22px;color:rgba(0,0,0,0.72);font-size:14px;line-height:1.7}
+
+    .cta-row{display:flex;flex-wrap:wrap;gap:12px}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:10px;
+      padding:14px 18px;border-radius:14px;border:1px solid rgba(0,0,0,0.14);
+      font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+      transition:background .25s ease, border-color .25s ease, color .25s ease, transform .25s ease;
+      background:transparent;color:rgba(0,0,0,0.90);
+    }
+    .btn:hover{transform:translateY(-1px);border-color:rgba(0,0,0,0.20)}
+    .btn-primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+    .btn-primary:hover{background:var(--gold);border-color:var(--gold);color:#000}
+
+    .receipt{
+      justify-self:end;
+      width:min(360px, 100%);
+      background:rgba(255,255,255,0.65);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px 18px 16px;
+      box-shadow:0 20px 50px rgba(0,0,0,0.06);
+    }
+    .receipt-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+    .badge{
+      display:inline-flex;align-items:center;gap:10px;
+      font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+      color:rgba(0,0,0,0.82);
+    }
+    .check{
+      width:34px;height:34px;border-radius:12px;background:rgba(198,169,94,0.18);
+      display:flex;align-items:center;justify-content:center;color:var(--gold);
+      border:1px solid rgba(198,169,94,0.38);
+      font-weight:700;
+    }
+    .receipt-line{display:flex;justify-content:space-between;gap:16px;font-size:12px;color:rgba(0,0,0,0.72);padding:8px 0;border-top:1px solid rgba(0,0,0,0.06)}
+    .receipt-line strong{color:rgba(0,0,0,0.86);font-weight:600}
+    .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace}
+
+    .content{padding:36px 0 86px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .card{
+      background:rgba(255,255,255,0.65);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px 18px 16px;
+    }
+    .card h3{
+      font-family:"Cormorant Garamond", serif;
+      margin:0 0 10px;
+      font-size:22px;letter-spacing:.01em;
+    }
+    .card p{margin:0;color:rgba(0,0,0,0.72);font-size:13px;line-height:1.7}
+    .card a{color:var(--gold);text-decoration:underline;text-underline-offset:3px}
+
+    @media (max-width: 900px){
+      .hero{padding:56px 0 26px}
+      .hero-inner{grid-template-columns:1fr;gap:18px}
+      .receipt{justify-self:start}
+      .title{font-size:44px}
+      .grid{grid-template-columns:1fr}
+      .nav-links{gap:16px}
+    }
+    @media (max-width: 600px){
+      .nav-links{display:none}
+      .title{font-size:38px}
+    }
+  </style>
+</head>
+<body>
+  <div id="loading-screen">
+    <img src="assets/images/TADJOURA FAVICON.png" class="loading-logo" alt="Loading...">
+  </div>
+
+  <nav>
+    <div class="container nav-inner">
+      <a class="logo" href="tadjoura-index.html">Tadjoura</a>
+      <div class="nav-links">
+        <a href="tadjoura-index.html" class="nav-link">Home</a>
+        <a href="springcollection.html" class="nav-link">Collection</a>
+        <a href="findyourscent.html" class="nav-link">Find Your Scent</a>
+        <a href="shippingreturns.html" class="nav-link">Shipping &amp; Returns</a>
+      </div>
+      <a class="nav-bag nav-link" id="navBag" href="cart.html" aria-label="Cart">
+        <svg class="nav-bag-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 7h-3c0-2.21-1.79-4-4-4S8 4.79 8 7H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-7-2c1.1 0 2 .9 2 2H10c0-1.1.9-2 2-2zm7 14H5V9h3v2c0 .55.45 1 1 1s1-.45 1-1V9h4v2c0 .55.45 1 1 1s1-.45 1-1V9h3v10z"/>
+        </svg>
+        <span class="nav-bag-count" id="navBagCount">(0)</span>
+      </a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container hero-inner">
+      <div>
+        <p class="kicker">Order Confirmed</p>
+        <h1 class="title">Thank you.</h1>
+        <p class="subtitle">
+          Your checkout is complete. If you used email at checkout, your receipt and updates will arrive shortly.
+          You can continue browsing or return to the collection.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary nav-link" href="springcollection.html">Back to Collection</a>
+          <a class="btn nav-link" href="tadjoura-index.html">Back Home</a>
+          <a class="btn nav-link" href="shippingreturns.html">Shipping &amp; Returns</a>
+        </div>
+      </div>
+
+      <div class="receipt" aria-label="Order summary">
+        <div class="receipt-top">
+          <div class="badge">
+            <div class="check">✓</div>
+            <div>Payment Complete</div>
+          </div>
+          <div class="badge" style="color:rgba(0,0,0,0.60)">Tadjoura</div>
+        </div>
+        <div class="receipt-line">
+          <span>Order reference</span>
+          <strong class="mono" id="orderRef">—</strong>
+        </div>
+        <div class="receipt-line">
+          <span>Bag</span>
+          <strong id="bagState">Cleared</strong>
+        </div>
+        <div class="receipt-line">
+          <span>Next</span>
+          <strong>Check email</strong>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="content">
+    <div class="container">
+      <div class="grid">
+        <div class="card">
+          <h3>What happens now?</h3>
+          <p>
+            We’ll begin preparing your order. Delivery timing and returns policy are detailed on
+            <a class="nav-link" href="shippingreturns.html">Shipping &amp; Returns</a>.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Need help?</h3>
+          <p>
+            If something looks wrong, contact <a href="mailto:support@tadjouraparfums.com">support@tadjouraparfums.com</a>
+            and include your order reference above.
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="bag.js"></script>
+  <script>
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const loader = document.getElementById('loading-screen');
+        if (loader) loader.classList.add('fade-out');
+      }, 800);
+    });
+
+    (function () {
+      const url = new URL(window.location.href);
+      const sessionId = url.searchParams.get('session_id');
+      const orderRefEl = document.getElementById('orderRef');
+      if (orderRefEl) orderRefEl.textContent = sessionId ? sessionId : '—';
+
+      if (window.TadjouraBag) {
+        TadjouraBag.save([]);
+        const countEl = document.getElementById('navBagCount');
+        const bagEl = document.getElementById('navBag');
+        if (countEl) countEl.textContent = '(0)';
+        if (bagEl) bagEl.classList.remove('has-items');
+      }
+    })();
+  </script>
+
+<script src="mobile.js"></script>
+</body>
+</html>
+

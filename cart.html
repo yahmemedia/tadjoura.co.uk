@@ -1,0 +1,120 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cart</title>
+  <style>
+    :root{--gold:#b89f6a;--ink:#0b0b0b}
+    body{margin:0;font-family:Arial, Helvetica, sans-serif;background:#fff;color:var(--ink)}
+    .wrap{max-width:980px;margin:0 auto;padding:48px 22px}
+    .title{font-size:28px;letter-spacing:.02em;margin:0 0 18px}
+    .sub{opacity:.7;margin:0 0 28px}
+    .card{border:1px solid rgba(0,0,0,.12);border-radius:14px;overflow:hidden}
+    .row{display:grid;grid-template-columns:72px 1fr auto;gap:16px;align-items:center;padding:16px 18px;border-top:1px solid rgba(0,0,0,.08)}
+    .row:first-child{border-top:none}
+    .img{width:72px;height:72px;border:1px solid rgba(0,0,0,.10);border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff}
+    .img img{width:100%;height:100%;object-fit:contain}
+    .name{font-size:14px;font-weight:700;margin:0 0 6px}
+    .meta{font-size:12px;opacity:.75;margin:0}
+    .right{display:flex;gap:14px;align-items:center}
+    .price{font-variant-numeric:lining-nums;font-size:13px}
+    .remove{background:none;border:none;color:rgba(0,0,0,.7);cursor:pointer;font-size:12px;text-decoration:underline;padding:0}
+    .footer{display:flex;justify-content:space-between;align-items:center;padding:18px;border-top:1px solid rgba(0,0,0,.08)}
+    .total{font-size:14px}
+    .total strong{font-size:16px}
+    .btn{appearance:none;border:none;background:var(--ink);color:#fff;padding:14px 18px;border-radius:12px;cursor:pointer;text-transform:uppercase;letter-spacing:.12em;font-size:11px}
+    .btn:hover{background:var(--gold);color:#000}
+    .empty{padding:22px;opacity:.7}
+  </style>
+
+<link rel="stylesheet" href="mobile.css">
+</head>
+<body>
+  <div class="wrap">
+    <h1 class="title">Cart</h1>
+    <p class="sub">Review your items, then proceed to checkout.</p>
+
+    <div class="card" id="cartCard"></div>
+
+    <div class="footer" id="cartFooter" style="display:none">
+      <div class="total">Total <strong id="cartTotal">£0.00</strong></div>
+      <button class="btn" id="checkoutBtn" type="button">Proceed to Checkout</button>
+    </div>
+  </div>
+
+  <script src="bag.js"></script>
+  <script>
+    function formatGBP(n){
+      const v = Number(n);
+      if (!Number.isFinite(v)) return '£0.00';
+      return `£${v.toFixed(2)}`;
+    }
+
+    function renderCart(){
+      const card = document.getElementById('cartCard');
+      const footer = document.getElementById('cartFooter');
+      const totalEl = document.getElementById('cartTotal');
+
+      const bag = window.TadjouraBag ? TadjouraBag.load() : [];
+      if (!bag.length){
+        card.innerHTML = '<div class="empty">Your cart is empty.</div>';
+        footer.style.display = 'none';
+        return;
+      }
+
+      let total = 0;
+      card.innerHTML = '';
+
+      bag.forEach((item, idx) => {
+        const unit = Number(item.price);
+        const qty = Number(item.qty);
+        const line = (Number.isFinite(unit) ? unit : 0) * (Number.isFinite(qty) ? qty : 1);
+        total += line;
+
+        const img = item.img ? String(item.img) : '';
+        const name = item.name ? String(item.name) : 'Item';
+        const size = item.size ? String(item.size) : '';
+
+        const row = document.createElement('div');
+        row.className = 'row';
+        row.innerHTML = `
+          <div class="img">${img ? `<img src="${img}" alt="${name}">` : ''}</div>
+          <div>
+            <p class="name">${name}</p>
+            <p class="meta">${size} × ${qty || 1}</p>
+          </div>
+          <div class="right">
+            <div class="price">${formatGBP(line)}</div>
+            <button class="remove" type="button" data-remove="${idx}">Remove</button>
+          </div>
+        `;
+        card.appendChild(row);
+      });
+
+      totalEl.textContent = formatGBP(total);
+      footer.style.display = 'flex';
+
+      card.querySelectorAll('[data-remove]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const i = Number(btn.getAttribute('data-remove'));
+          const current = TadjouraBag.load();
+          current.splice(i, 1);
+          TadjouraBag.save(current);
+          renderCart();
+        });
+      });
+    }
+
+    document.getElementById('checkoutBtn').addEventListener('click', async () => {
+      if (!window.TadjouraBag) return;
+      await TadjouraBag.checkout(TadjouraBag.load());
+    });
+
+    renderCart();
+  </script>
+
+<script src="mobile.js"></script>
+</body>
+</html>
+
