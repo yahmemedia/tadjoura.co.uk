@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -601,15 +601,15 @@ nav{
 
 <nav>
   <div class="container nav-inner">
-    <a href="tadjoura-index.html" class="logo">Tadjoura</a>
+    <a href="/" class="logo">Tadjoura</a>
     <div class="nav-links">
-      <a href="tadjoura-index.html">Home</a>
+      <a href="/">Home</a>
       <button class="nav-btn" type="button" id="collectionToggle" aria-expanded="false" style="color:var(--gold)">Collection</button>
-      <a href="findyourscent.html">Find Your Scent</a>
+      <a href="/findyourscent">Find Your Scent</a>
       <a href="#">Gallery</a>
-      <a href="shippingreturns.html">Shipping &amp; Returns</a>
-      <a href="tadjoura-about.html">About</a>
-      <a href="tadjoura-contact.html">Contact</a>
+      <a href="/shippingreturns">Shipping &amp; Returns</a>
+      <a href="/tadjoura-about">About</a>
+      <a href="/tadjoura-contact">Contact</a>
       <div class="nav-bag" id="navBag" onclick="toggleBag()" aria-label="Bag">
         <svg class="nav-bag-icon" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M19 7h-3c0-2.21-1.79-4-4-4S8 4.79 8 7H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-7-2c1.1 0 2 .9 2 2H10c0-1.1.9-2 2-2zm7 14H5V9h3v2c0 .55.45 1 1 1s1-.45 1-1V9h4v2c0 .55.45 1 1 1s1-.45 1-1V9h3v10z"/>
@@ -620,9 +620,9 @@ nav{
   </div>
   <div class="collection-dropdown" id="collectionDropdown" aria-hidden="true">
     <div class="collection-list">
-      <a class="collection-bar collection-bar-link" href="springcollection.html" aria-label="Spring Collection 25/26">
+      <a class="collection-bar collection-bar-link" href="/springcollection" aria-label="Spring Collection 25/26">
         <video class="collection-bar-video" autoplay muted loop playsinline>
-          <source src="assets/images/waterwet.mp4" type="video/mp4">
+          <source src="https://res.cloudinary.com/dkk1o2pra/video/upload/q_auto/f_auto/v1777920261/waterwet_aqy3zo.mp4" type="video/mp4">
         </video>
         <div class="collection-bar-overlay"></div>
         <div class="collection-bar-title">Spring Collection 25/26</div>
@@ -648,7 +648,7 @@ nav{
 
 <section class="showcase-hero">
   <video class="showcase-bg" autoplay muted loop playsinline>
-    <source src="assets/images/waterwet.mp4" type="video/mp4">
+    <source src="https://res.cloudinary.com/dkk1o2pra/video/upload/q_auto/f_auto/v1777920261/waterwet_aqy3zo.mp4" type="video/mp4">
   </video>
   <div class="showcase-content">
     <h1 class="showcase-title">Showcase</h1>
@@ -759,18 +759,18 @@ nav{
   })();
 
   const products = [
-    { name: "Golden Euphrates", desc: "Amber and spice carried by Persian winds.", family: "Spicy & Warm", type: "Oud Oil", href: "goldeneuphrates.html", img: "oudbottle1bg.png", rating: 5, reviews: 24, texture: "texture1.png" },
-    { name: "Apollonia Musk", desc: "Sun drenched herbs carried by citrus groves.", family: "Fresh & Airy", type: "Attar Concentrated", href: "apolloniamusk.html", img: "oudbottle1bg.png", rating: 4, reviews: 18, texture: "texture2.png" },
-    { name: "Lemnos Oud", desc: "Smoky cedarwood with a touch of Mediterranean salt.", family: "Smoky & Dark", type: "Oud Oil", href: "lemnosoud.html", img: "oudbottle1bg.png", rating: 5, reviews: 31, texture: "texture3.png" },
-    { name: "Marmara Elixir", desc: "Sweet honey and velvet rose from the Bosphorus.", family: "Sweet & Resinous", type: "Attar Concentrated", href: "marmaraelixir.html", img: "oudbottle1bg.png", rating: 4, reviews: 15, texture: "texture4.png" },
-    { name: "Abruzzo Gold", desc: "Vibrant bergamot blended with ancient resin.", family: "Fresh & Airy", type: "Oud Oil", href: "abruzzogold.html", img: "oudbottle1bg.png", rating: 5, reviews: 22, texture: "texture5.png" },
-    { name: "Sultan's Breath", desc: "Deep dark oud with a hint of cinnamon bark.", family: "Spicy & Warm", type: "Attar Concentrated", href: "sultansbreath.html", img: "oudbottle1bg.png", rating: 5, reviews: 45, texture: "texture6.png" },
-    { name: "Nomad's Silk", desc: "Soft white musk and desert jasmine.", family: "Clean & Musky", type: "Oud Oil", href: "nomadsilk.html", img: "oudbottle1bg.png", rating: 4, reviews: 19, texture: "texture1.png" },
-    { name: "Persian Rose", desc: "Pure damask rose with a base of warm sandalwood.", family: "Floral & Soft", type: "Attar Concentrated", href: "persianrose.html", img: "oudbottle1bg.png", rating: 5, reviews: 27, texture: "texture2.png", soldOut: true },
-    { name: "Bazaar Night", desc: "Intense spices and leather notes.", family: "Smoky & Dark", type: "Oud Oil", href: "bazaarnight.html", img: "oudbottle1bg.png", rating: 4, reviews: 33, texture: "texture3.png", soldOut: true },
-    { name: "Oasis Mist", desc: "Cool water notes with green patchouli.", family: "Fresh & Airy", type: "Attar Concentrated", href: "oasismist.html", img: "oudbottle1bg.png", rating: 5, reviews: 21, texture: "texture4.png", soldOut: true },
-    { name: "Royal Amber", desc: "Rich ambergris with aged vanilla pod.", family: "Sweet & Resinous", type: "Oud Oil", href: "royalamber.html", img: "oudbottle1bg.png", rating: 5, reviews: 38, texture: "texture5.png", soldOut: true },
-    { name: "Atlas Cedar", desc: "Woody notes from the high mountains.", family: "Woody & Earthy", type: "Attar Concentrated", href: "atlascedar.html", img: "oudbottle1bg.png", rating: 4, reviews: 14, texture: "texture6.png", soldOut: true }
+    { name: "Golden Euphrates", desc: "Amber and spice carried by Persian winds.", family: "Spicy & Warm", type: "Oud Oil", href: "/goldeneuphrates", img: "oudbottle1bg.png", rating: 5, reviews: 24, texture: "texture1.png" },
+    { name: "Apollonia Musk", desc: "Sun drenched herbs carried by citrus groves.", family: "Fresh & Airy", type: "Attar Concentrated", href: "/apolloniamusk", img: "oudbottle1bg.png", rating: 4, reviews: 18, texture: "texture2.png" },
+    { name: "Lemnos Oud", desc: "Smoky cedarwood with a touch of Mediterranean salt.", family: "Smoky & Dark", type: "Oud Oil", href: "/lemnosoud", img: "oudbottle1bg.png", rating: 5, reviews: 31, texture: "texture3.png" },
+    { name: "Marmara Elixir", desc: "Sweet honey and velvet rose from the Bosphorus.", family: "Sweet & Resinous", type: "Attar Concentrated", href: "/marmaraelixir", img: "oudbottle1bg.png", rating: 4, reviews: 15, texture: "texture4.png" },
+    { name: "Abruzzo Gold", desc: "Vibrant bergamot blended with ancient resin.", family: "Fresh & Airy", type: "Oud Oil", href: "/abruzzogold", img: "oudbottle1bg.png", rating: 5, reviews: 22, texture: "texture5.png" },
+    { name: "Sultan's Breath", desc: "Deep dark oud with a hint of cinnamon bark.", family: "Spicy & Warm", type: "Attar Concentrated", href: "/sultansbreath", img: "oudbottle1bg.png", rating: 5, reviews: 45, texture: "texture6.png" },
+    { name: "Nomad's Silk", desc: "Soft white musk and desert jasmine.", family: "Clean & Musky", type: "Oud Oil", href: "/nomadsilk", img: "oudbottle1bg.png", rating: 4, reviews: 19, texture: "texture1.png" },
+    { name: "Persian Rose", desc: "Pure damask rose with a base of warm sandalwood.", family: "Floral & Soft", type: "Attar Concentrated", href: "/persianrose", img: "oudbottle1bg.png", rating: 5, reviews: 27, texture: "texture2.png", soldOut: true },
+    { name: "Bazaar Night", desc: "Intense spices and leather notes.", family: "Smoky & Dark", type: "Oud Oil", href: "/bazaarnight", img: "oudbottle1bg.png", rating: 4, reviews: 33, texture: "texture3.png", soldOut: true },
+    { name: "Oasis Mist", desc: "Cool water notes with green patchouli.", family: "Fresh & Airy", type: "Attar Concentrated", href: "/oasismist", img: "oudbottle1bg.png", rating: 5, reviews: 21, texture: "texture4.png", soldOut: true },
+    { name: "Royal Amber", desc: "Rich ambergris with aged vanilla pod.", family: "Sweet & Resinous", type: "Oud Oil", href: "/royalamber", img: "oudbottle1bg.png", rating: 5, reviews: 38, texture: "texture5.png", soldOut: true },
+    { name: "Atlas Cedar", desc: "Woody notes from the high mountains.", family: "Woody & Earthy", type: "Attar Concentrated", href: "/atlascedar", img: "oudbottle1bg.png", rating: 4, reviews: 14, texture: "texture6.png", soldOut: true }
   ];
 
   const grid = document.getElementById('productGrid');

@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
   function buildIcon() {
     return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v2H4V7zm0 6h16v2H4v-2zm0 6h16v2H4v-2z"/></svg>';
   }
@@ -23,7 +23,7 @@
     if (document.querySelector('.mobile-menu')) return;
 
     const logo = nav.querySelector('.logo');
-    const logoHref = logo && logo.getAttribute('href') ? logo.getAttribute('href') : 'tadjoura-index.html';
+    const logoHref = logo && logo.getAttribute('href') ? logo.getAttribute('href') : '/';
     const logoText = logo ? (logo.textContent || 'Tadjoura') : 'Tadjoura';
 
     const navLinks = nav.querySelector('.nav-links');
@@ -81,7 +81,7 @@
       if (!hasCart) {
         const cartLink = document.createElement('a');
         cartLink.className = 'nav-link';
-        cartLink.href = 'cart.html';
+        cartLink.href = '/cart';
         cartLink.textContent = 'Cart';
         linksWrap.appendChild(cartLink);
       }
